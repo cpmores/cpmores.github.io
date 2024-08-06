@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Handling Text 丨
+    
+
+    typo
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">Cpmores&#39; World</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Handling Text</div>
+  <div class="post-meta">
+    <div class="date">1970 January 1st</div>
+    <div class="tags">
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h2 id="Declaring-strings"><a href="#Declaring-strings" class="headerlink" title="Declaring strings"></a>Declaring strings</h2><pre><code class="highlight javascript"><span class="keyword">const</span> single = <span class="string">&#x27;Single quotes&#x27;</span>;
+<span class="keyword">const</span> double = <span class="string">&quot;Double quotes&quot;</span>;
+<span class="keyword">const</span> backtick = <span class="string">`Backtick`</span>;
+
+<span class="variable language_">console</span>.<span class="title function_">log</span>(single);
+<span class="variable language_">console</span>.<span class="title function_">log</span>(double);
+<span class="variable language_">console</span>.<span class="title function_">log</span>(backtick);</code></pre>
+
+<hr>
+<h3 id="warp-the-strings"><a href="#warp-the-strings" class="headerlink" title="warp the strings"></a>warp the strings</h3><pre><code class="highlight javascript"><span class="keyword">const</span> one = <span class="string">&quot;Hello, &quot;</span>;
+<span class="keyword">const</span> two = <span class="string">&quot;how are you?&quot;</span>;
+<span class="keyword">const</span> joined = <span class="string">`<span class="subst">$&#123;one&#125;</span><span class="subst">$&#123;two&#125;</span>`</span>;
+<span class="variable language_">console</span>.<span class="title function_">log</span>(joined); <span class="comment">// &quot;Hello, how are you?&quot;</span></code></pre>
+
+<pre><code class="highlight javascript"><span class="keyword">const</span> greeting = <span class="string">&quot;Hello&quot;</span>;
+<span class="keyword">const</span> name = <span class="string">&quot;Chris&quot;</span>;
+<span class="variable language_">console</span>.<span class="title function_">log</span>(greeting + <span class="string">&quot;, &quot;</span> + name); <span class="comment">// &quot;Hello, Chris&quot;</span></code></pre>
+
+<pre><code class="highlight javascript"><span class="keyword">const</span> greeting = <span class="string">&quot;Hello&quot;</span>;
+<span class="keyword">const</span> name = <span class="string">&quot;Chris&quot;</span>;
+<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`<span class="subst">$&#123;greeting&#125;</span>, <span class="subst">$&#123;name&#125;</span>`</span>); <span class="comment">// &quot;Hello, Chris&quot;</span></code></pre>
+
+<p>when using number to add strings, numbers turn to strings automatically.</p>
+<pre><code class="highlight javascript"><span class="keyword">const</span> myString = <span class="string">&quot;123&quot;</span>;
+<span class="keyword">const</span> myNum = <span class="title class_">Number</span>(myString);
+<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">typeof</span> myNum);
+<span class="comment">// number</span></code></pre>
+
+<pre><code class="highlight javascript"><span class="keyword">const</span> myNum2 = <span class="number">123</span>;
+<span class="keyword">const</span> myString2 = <span class="title class_">String</span>(myNum2);
+<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">typeof</span> myString2);
+<span class="comment">// string</span></code></pre>
+</main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2024 typo</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>
