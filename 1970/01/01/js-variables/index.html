@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    js-variables 丨
+    
+
+    typo
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">Cpmores&#39; World</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">js-variables</div>
+  <div class="post-meta">
+    <div class="date">1970 January 1st</div>
+    <div class="tags">
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h2 id="Store-the-information-I-need–Variables"><a href="#Store-the-information-I-need–Variables" class="headerlink" title="Store the information I need–Variables"></a>Store the information I need–Variables</h2><p>Here is an example:</p>
+<pre><code class="highlight html"><span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">&quot;button_A&quot;</span>&gt;</span>Press me<span class="tag">&lt;/<span class="name">button</span>&gt;</span>
+<span class="tag">&lt;<span class="name">h3</span> <span class="attr">id</span>=<span class="string">&quot;heading_A&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">h3</span>&gt;</span></code></pre>
+
+<pre><code class="highlight javascript"><span class="keyword">const</span> buttonA = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;#button_A&quot;</span>);
+<span class="keyword">const</span> headingA = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;#heading_A&quot;</span>);
+
+<span class="keyword">let</span> count = <span class="number">1</span>;
+
+buttonA.<span class="property">onclick</span> = <span class="function">() =&gt;</span> &#123;
+  buttonA.<span class="property">textContent</span> = <span class="string">&quot;Try again!&quot;</span>;
+  headingA.<span class="property">textContent</span> = <span class="string">`<span class="subst">$&#123;count&#125;</span> clicks so far`</span>;
+  count += <span class="number">1</span>;
+&#125;;</code></pre>
+
+<h3 id="How-to-define-a-variable"><a href="#How-to-define-a-variable" class="headerlink" title="How to define a variable"></a>How to define a variable</h3><pre><code class="highlight javascript">myName = <span class="string">&quot;Chris&quot;</span>;
+
+<span class="keyword">function</span> <span class="title function_">logName</span>(<span class="params"></span>) &#123;
+  <span class="variable language_">console</span>.<span class="title function_">log</span>(myName);
+&#125;
+
+<span class="title function_">logName</span>();
+
+<span class="keyword">var</span> myName;</code></pre>
+
+<pre><code class="highlight javascript"><span class="keyword">let</span> name = <span class="string">&quot;Hello&quot;</span>;
+name = <span class="string">&quot;Ace&quot;</span>;</code></pre>
+
+<h3 id="The-type-of-Variables"><a href="#The-type-of-Variables" class="headerlink" title="The type of Variables"></a>The type of Variables</h3><ul>
+<li>Numbers: let my age &#x3D; 17;</li>
+<li>Strings</li>
+<li>Booleans</li>
+<li>Arrays</li>
+<li>Objects(Similar to struct)</li>
+<li>const</li>
+</ul>
+</main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2024 typo</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>
