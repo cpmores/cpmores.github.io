@@ -1,0 +1,32 @@
+baseURL = "http://cpmores.github.io/"
+title = "My Blog"
+languageCode = "en-us"
+theme = "papermod"
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]  # 启用搜索
+
+[taxonomies]
+  tag = "tags"  # 启用标签
+
+[params]
+  ShowSearch = true  # 启用搜索
+  ShowReadingTime = true
+  ShowShareButtons = true
+  ShowPostNavLinks = true
+
+  [params.homeInfoParams]
+    Title = "欢迎来到我的博客"
+    Content = "使用 PaperMod 主题，支持搜索、归档和标签。"
+
+[[menu.main]]
+  identifier = "archives"
+  name = "Archives"
+  url = "/posts/"
+  weight = 10
+
+[[menu.main]]
+  identifier = "tags"
+  name = "Tags"
+  url = "/tags/"
+  weight = 20
