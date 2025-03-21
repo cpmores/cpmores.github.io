@@ -1,5 +1,5 @@
 baseURL = "http://cpmores.github.io/"
-title = "My Blog"
+title = "Cpmores"
 languageCode = "en-us"
 theme = "papermod"
 
@@ -12,7 +12,7 @@ theme = "papermod"
 [params]
   ShowSearch = true  # 启用搜索
   ShowReadingTime = true
-  ShowShareButtons = true
+  ShowShareButtons = false
   ShowPostNavLinks = true
 
   [params.homeInfoParams]
