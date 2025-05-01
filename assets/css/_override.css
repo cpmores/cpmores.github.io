@@ -1,0 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200..900&display=swap');
+
+$header-title-font-family: 'Noto Serif SC', 'Times New Roman', serif;
+$header-title-font-size: 2.1875rem; /* 35px */
+$header-title-line-height: 2.5rem; /* 调整为更合适的行高 */
+
+header {
+  font-family: $header-title-font-family;
+  font-size: $header-title-font-size;
+  line-height: $header-title-line-height;
+}
