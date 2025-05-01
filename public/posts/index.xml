@@ -1,19 +1,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Posts on Cpmores</title>
-        <link>https://cpmores.github.io/posts/</link>
+        <link>http://localhost:1313/posts/</link>
         <description>Recent content in Posts on Cpmores</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <lastBuildDate>Thu, 01 May 2025 10:13:12 +0800</lastBuildDate>
-        <atom:link href="https://cpmores.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
         
         <item>
             <title>漫步</title>
-            <link>https://cpmores.github.io/posts/wild/wonder1/</link>
+            <link>http://localhost:1313/posts/wonder1/</link>
             <pubDate>Thu, 01 May 2025 10:13:12 +0800</pubDate>
             
-            <guid>https://cpmores.github.io/posts/wild/wonder1/</guid>
+            <guid>http://localhost:1313/posts/wonder1/</guid>
             <description>回老家，翻旧书。
 书真的承载着记忆啊。回到过去，只需要不同时刻拿到同一本书，所有的情感奔涌而来，纷乱之际又姗姗而去。
 翻了翻书柜，选到了《偷影子的人》，现在来看挺抽象，特别是译者。段女士看起来就是当初以新东方为标志的留学潮一代，我猜她想必是那种不学无术的留子，这是第一印象，连交换学期都是自我介绍的一部分。段老师还翻译了一本《精灵少女》，还是酷爱青春文学的。
