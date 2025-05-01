@@ -21,7 +21,7 @@ Haha,很有时代感的小资画像。
 
 《偷影子的人》像是同人，《安娜贝尔李》的同人，同样是同人，纳博科夫的技术要高三四层。
 
-<iframe src="https://www.poetryfoundation.org/poems/44885/annabel-lee" width=100% height="1000" frameborder="0" allowfullscreen></iframe>
+<!-- <iframe src="https://www.poetryfoundation.org/poems/44885/annabel-lee" width=100% height="1000" frameborder="0" allowfullscreen></iframe> -->
 
 不愧是畅销书作者，还是懂得如何调动人的情绪，非常典型的情节和人物设计。
 

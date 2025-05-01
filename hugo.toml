@@ -1,7 +1,7 @@
-baseURL = "http://cpmores.github.io/"
+baseURL = "https://cpmores.github.io/" # 改为 HTTPS
 title = "Cpmores"
 languageCode = "en-us"
-theme = "papermod"
+theme = "hello-friend-ng"
 
 [outputs]
 home = ["HTML", "RSS", "JSON"] # 启用搜索
@@ -10,26 +10,36 @@ home = ["HTML", "RSS", "JSON"] # 启用搜索
 tag = "tags" # 启用标签
 
 [params]
-ShowSearch = true        # 启用搜索
-ShowReadingTime = true
-ShowShareButtons = false
-ShowPostNavLinks = true
+dateform = "Jan 2, 2006"
+dateformShort = "Jan 2"
+dateformNum = "2006-01-02"
+dateformNumTime = "2006-01-02 15:04"
+homeSubtitle = "A simple and beautiful blog" # 首页副标题
+enableSharingButtons = false                 # 分享按钮
+enableGlobalLanguageMenu = true              # 多语言切换
+disableReadOtherPosts = false                # 显示其他文章链接
 
-[params.homeInfoParams]
-Title = "欢迎来到我的博客"
-Content = "使用 PaperMod 主题，支持搜索、归档和标签。"
+[params.search]
+enable = true    # 启用搜索
+backend = "fuse" # 使用 Fuse.js
 
 [[menu.main]]
 identifier = "archives"
 name = "Archives"
 url = "/posts/"
 weight = 10
-
-[[menu.main]]
-identifier = "tags"
-name = "Tags"
-url = "/tags/"
-weight = 20
+#
+# [[menu.main]]
+# identifier = "tags"
+# name = "Tags"
+# url = "/tags/"
+# weight = 20
+#
+# [[menu.main]]
+# identifier = "search"
+# name = "Search"
+# url = "/search/"
+# weight = 30
 
 [markup.goldmark.renderer]
-unsafe = true # 允许渲染原始 HTML（包括 iframe）
+unsafe = true # 允许原始 HTML（如 iframe）
