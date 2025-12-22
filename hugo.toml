@@ -14,8 +14,8 @@ dateform = "Jan 2, 2006"
 dateformShort = "Jan 2"
 dateformNum = "2006-01-02"
 dateformNumTime = "2006-01-02 15:04"
-homeSubtitle = "A simple and beautiful blog" # 首页副标题
-enableSharingButtons = false                 # 分享按钮
+homeSubtitle = "A place to hide, I am an Ostrich" # 首页副标题
+enableSharingButtons = true                 # 按钮
 enableGlobalLanguageMenu = true              # 多语言切换
 disableReadOtherPosts = false                # 显示其他文章链接
 
@@ -28,18 +28,18 @@ identifier = "archives"
 name = "Archives"
 url = "/posts/"
 weight = 10
-#
-# [[menu.main]]
-# identifier = "tags"
-# name = "Tags"
-# url = "/tags/"
-# weight = 20
-#
-# [[menu.main]]
-# identifier = "search"
-# name = "Search"
-# url = "/search/"
-# weight = 30
+
+[[menu.main]]
+identifier = "tags"
+name = "Tags"
+url = "/tags/"
+weight = 20
+
+[[menu.main]]
+identifier = "search"
+name = "Search"
+url = "/search/"
+weight = 30
 
 [markup.goldmark.renderer]
 unsafe = true # 允许原始 HTML（如 iframe）
