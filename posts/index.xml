@@ -1,4 +1,137 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Cpmores</title><link>https://cpmores.github.io/posts/</link><description>Recent content in Posts on Cpmores</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 01 Feb 2026 14:27:06 +0800</lastBuildDate><atom:link href="https://cpmores.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>CNN 图像分类底层构建</title><link>https://cpmores.github.io/posts/cnn_project/</link><pubDate>Sun, 01 Feb 2026 14:27:06 +0800</pubDate><guid>https://cpmores.github.io/posts/cnn_project/</guid><description/><content type="html"></content></item><item><title>纳博科夫的 Ending</title><link>https://cpmores.github.io/posts/nabokovs_end/</link><pubDate>Sat, 17 Jan 2026 19:05:54 +0800</pubDate><guid>https://cpmores.github.io/posts/nabokovs_end/</guid><description>&lt;p&gt;今日再一次注视卢塞特的消逝，有一种力量驱使我写下一点东西，也为我从高中第一次阅读这本 “家族纪事” 开始，三年来的流转，画上一个结束的圆圈。&lt;/p&gt;
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Cpmores</title><link>https://cpmores.github.io/posts/</link><description>Recent content in Posts on Cpmores</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 01 Feb 2026 14:27:06 +0800</lastBuildDate><atom:link href="https://cpmores.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>CNN 图像分类底层构建</title><link>https://cpmores.github.io/posts/cnn_project/</link><pubDate>Sun, 01 Feb 2026 14:27:06 +0800</pubDate><guid>https://cpmores.github.io/posts/cnn_project/</guid><description>&lt;p&gt;2026 年还写 CNN 的 Hello World 博客，是不是有些明日黄花。&lt;/p&gt;
+&lt;p&gt;内容被反反复复再生产，更不用提其生产工作也在被 AI 自身所替代。但是很可惜，理解的过程 AI 并不能替代我完成，AI Infra 推陈出新，谁又能把我的血肉硬件更新换代呢。&lt;/p&gt;
+&lt;p&gt;最近为了参与 Kubeflow 还是不得不开始着手学习一些基本概念（虽然对其应用层面并不感冒），想着写一个 CNN 图像分类，当然还是用 MNIST ，不使用第三方框架（Flux 之类），实际写起来感觉网络上的资源还是强理论弱实践，更要命的是，矩阵求偏导的过程显得神乎其神，代码实现时似乎无从下手，还有实际代码上的小细节是理论证明中所没有包含的。本文就浅浅记录一下完成一个完整的图像分类的工作流程。理论部分推荐：https://zhuanlan.zhihu.com/p/687501772&lt;/p&gt;
+&lt;h2 id="数据导入-dataloader"&gt;数据导入 dataLoader&lt;/h2&gt;
+&lt;p&gt;数据镜像：https://gitee.com/fmubai/mnist-mirror&lt;/p&gt;
+&lt;p&gt;四个文件分别用于训练和测试：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-julia" data-lang="julia"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;function&lt;/span&gt; read_mnist_images(filename)&lt;span style="color:#f92672"&gt;::&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;ClassifyImagesMatrix&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; open(filename) &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt; io
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# get meta&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; magic_number &lt;span style="color:#f92672"&gt;=&lt;/span&gt; ntoh(read(io, &lt;span style="color:#66d9ef"&gt;Int32&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; num_images &lt;span style="color:#f92672"&gt;=&lt;/span&gt; ntoh(read(io, &lt;span style="color:#66d9ef"&gt;Int32&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; img_rows &lt;span style="color:#f92672"&gt;=&lt;/span&gt; ntoh(read(io, &lt;span style="color:#66d9ef"&gt;Int32&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; img_cols &lt;span style="color:#f92672"&gt;=&lt;/span&gt; ntoh(read(io, &lt;span style="color:#66d9ef"&gt;Int32&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# read real images&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; images &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Array&lt;/span&gt;{&lt;span style="color:#66d9ef"&gt;UInt8&lt;/span&gt;}(undef, img_cols, img_rows, num_images)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; read!(io, images)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; images_float &lt;span style="color:#f92672"&gt;=&lt;/span&gt; permutedims(images, (&lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; normalized &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Float32&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;(images_float) &lt;span style="color:#f92672"&gt;./&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;255.0f0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; ClassifyImagesMatrix(normalized, img_rows, img_cols, num_images, filename)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;function&lt;/span&gt; read_mnist_labels(filename)&lt;span style="color:#f92672"&gt;::&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;ClassifyLabelsMatrix&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; open(filename) &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt; io
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; magic_number &lt;span style="color:#f92672"&gt;=&lt;/span&gt; ntoh(read(io, &lt;span style="color:#66d9ef"&gt;Int32&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; num_labels &lt;span style="color:#f92672"&gt;=&lt;/span&gt; ntoh(read(io, &lt;span style="color:#66d9ef"&gt;Int32&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; labels &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Array&lt;/span&gt;{&lt;span style="color:#66d9ef"&gt;UInt8&lt;/span&gt;}(undef, num_labels)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; read!(io, labels)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; ClassifyLabelsMatrix(labels, num_labels, filename)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;文件使用的是网络序，还得手动转为字节序，当然标签和图片是一一对应的。&lt;/p&gt;</description><content type="html"><![CDATA[<p>2026 年还写 CNN 的 Hello World 博客，是不是有些明日黄花。</p>
+<p>内容被反反复复再生产，更不用提其生产工作也在被 AI 自身所替代。但是很可惜，理解的过程 AI 并不能替代我完成，AI Infra 推陈出新，谁又能把我的血肉硬件更新换代呢。</p>
+<p>最近为了参与 Kubeflow 还是不得不开始着手学习一些基本概念（虽然对其应用层面并不感冒），想着写一个 CNN 图像分类，当然还是用 MNIST ，不使用第三方框架（Flux 之类），实际写起来感觉网络上的资源还是强理论弱实践，更要命的是，矩阵求偏导的过程显得神乎其神，代码实现时似乎无从下手，还有实际代码上的小细节是理论证明中所没有包含的。本文就浅浅记录一下完成一个完整的图像分类的工作流程。理论部分推荐：https://zhuanlan.zhihu.com/p/687501772</p>
+<h2 id="数据导入-dataloader">数据导入 dataLoader</h2>
+<p>数据镜像：https://gitee.com/fmubai/mnist-mirror</p>
+<p>四个文件分别用于训练和测试：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-julia" data-lang="julia"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> read_mnist_images(filename)<span style="color:#f92672">::</span><span style="color:#66d9ef">ClassifyImagesMatrix</span>
+</span></span><span style="display:flex;"><span>    open(filename) <span style="color:#66d9ef">do</span> io
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># get meta</span>
+</span></span><span style="display:flex;"><span>        magic_number <span style="color:#f92672">=</span> ntoh(read(io, <span style="color:#66d9ef">Int32</span>))
+</span></span><span style="display:flex;"><span>        num_images <span style="color:#f92672">=</span> ntoh(read(io, <span style="color:#66d9ef">Int32</span>))
+</span></span><span style="display:flex;"><span>        img_rows <span style="color:#f92672">=</span> ntoh(read(io, <span style="color:#66d9ef">Int32</span>))
+</span></span><span style="display:flex;"><span>        img_cols <span style="color:#f92672">=</span> ntoh(read(io, <span style="color:#66d9ef">Int32</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># read real images</span>
+</span></span><span style="display:flex;"><span>        images <span style="color:#f92672">=</span> <span style="color:#66d9ef">Array</span>{<span style="color:#66d9ef">UInt8</span>}(undef, img_cols, img_rows, num_images)
+</span></span><span style="display:flex;"><span>        read!(io, images)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        images_float <span style="color:#f92672">=</span> permutedims(images, (<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>))
+</span></span><span style="display:flex;"><span>        normalized <span style="color:#f92672">=</span> <span style="color:#66d9ef">Float32</span><span style="color:#f92672">.</span>(images_float) <span style="color:#f92672">./</span> <span style="color:#ae81ff">255.0f0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> ClassifyImagesMatrix(normalized, img_rows, img_cols, num_images, filename)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> read_mnist_labels(filename)<span style="color:#f92672">::</span><span style="color:#66d9ef">ClassifyLabelsMatrix</span>
+</span></span><span style="display:flex;"><span>    open(filename) <span style="color:#66d9ef">do</span> io
+</span></span><span style="display:flex;"><span>        magic_number <span style="color:#f92672">=</span> ntoh(read(io, <span style="color:#66d9ef">Int32</span>))
+</span></span><span style="display:flex;"><span>        num_labels <span style="color:#f92672">=</span> ntoh(read(io, <span style="color:#66d9ef">Int32</span>))
+</span></span><span style="display:flex;"><span>        labels <span style="color:#f92672">=</span> <span style="color:#66d9ef">Array</span>{<span style="color:#66d9ef">UInt8</span>}(undef, num_labels)
+</span></span><span style="display:flex;"><span>        read!(io, labels)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> ClassifyLabelsMatrix(labels, num_labels, filename)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><p>文件使用的是网络序，还得手动转为字节序，当然标签和图片是一一对应的。</p>
+<h2 id="设计层级-layers">设计层级 Layers</h2>
+<p>既然是自己手写，当然怎么简单怎么来，使用以下层级：</p>
+<ul>
+<li>卷积层</li>
+<li>ReLU</li>
+<li>池化层</li>
+<li>Flatten</li>
+<li>全连接层</li>
+<li>Softmax</li>
+<li>Loss</li>
+</ul>
+<p>思路其实和函数拟合差不多，将图片输入卷积层，卷积层使用卷积操作提取信息，通过激活函数进行非线性化，在池化层进一步降阶，多进行几次然后展开为一维向量，进入全连接层，降阶到 10 ，就可以拿给 Softmax 转为概率，去预测标签了，Loss 就是与实际的偏移程度，反向传播将 Loss 对于每一层输入以及参数的偏导层层传递（当然是为了减少计算开销），进行一次网络参数的修改（在这个架构中只有卷积层、全连接层、Softmax 实际上是有参数需要修改的）。</p>
+<hr>
+<p>为了增加模型的灵活性，使用 Chain 模式抽象层来构建模型（ 感慨 Julia 的 abstract type 太美好了 ）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-julia" data-lang="julia"><span style="display:flex;"><span><span style="color:#66d9ef">abstract type</span> <span style="color:#66d9ef">AbstractLayer</span> <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">LayerCache</span>
+</span></span><span style="display:flex;"><span>    input,
+</span></span><span style="display:flex;"><span>    output,
+</span></span><span style="display:flex;"><span>    extra<span style="color:#f92672">::</span><span style="color:#66d9ef">Dict</span>{<span style="color:#66d9ef">Symbol</span>,<span style="color:#66d9ef">Any</span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># needs implement</span>
+</span></span><span style="display:flex;"><span>forward(layer<span style="color:#f92672">::</span><span style="color:#66d9ef">AbstractLayer</span>, x) <span style="color:#f92672">=</span> error(<span style="color:#e6db74">&#34;Not implemented for </span><span style="color:#e6db74">$</span>(typeof(layer))<span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>backward(layer<span style="color:#f92672">::</span><span style="color:#66d9ef">AbstractLayer</span>, cache<span style="color:#f92672">::</span><span style="color:#66d9ef">LayerCache</span>, grad_output) <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>    error(<span style="color:#e6db74">&#34;Not implemented for </span><span style="color:#e6db74">$</span>(typeof(layer))<span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">ConvLayer</span> <span style="color:#f92672">&lt;:</span> <span style="color:#66d9ef">AbstractLayer</span>
+</span></span><span style="display:flex;"><span>    weights,
+</span></span><span style="display:flex;"><span>    bias,
+</span></span><span style="display:flex;"><span>    stribe<span style="color:#f92672">::</span><span style="color:#66d9ef">Int</span>,
+</span></span><span style="display:flex;"><span>    padding<span style="color:#f92672">::</span><span style="color:#66d9ef">Int</span>,
+</span></span><span style="display:flex;"><span>    kernel_size<span style="color:#f92672">::</span><span style="color:#66d9ef">Tuple</span>{<span style="color:#66d9ef">Int</span>,<span style="color:#66d9ef">Int</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">function</span> ConvLayer(num_in_channel<span style="color:#f92672">::</span><span style="color:#66d9ef">Int</span>, num_out_channel<span style="color:#f92672">::</span><span style="color:#66d9ef">Int</span>, stribe<span style="color:#f92672">::</span><span style="color:#66d9ef">Int</span><span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>        padding<span style="color:#f92672">::</span><span style="color:#66d9ef">Int</span><span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>, kernel_size<span style="color:#f92672">::</span><span style="color:#66d9ef">Tuple</span>{<span style="color:#66d9ef">Int</span>,<span style="color:#66d9ef">Int</span>}<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>))<span style="color:#f92672">::</span><span style="color:#66d9ef">ConvLayer</span>
+</span></span><span style="display:flex;"><span>        weight <span style="color:#f92672">=</span> randn(<span style="color:#66d9ef">Float32</span>, kernel_size<span style="color:#f92672">...</span>, num_in_channel, num_out_channel)
+</span></span><span style="display:flex;"><span>        bias <span style="color:#f92672">=</span> zeros(<span style="color:#66d9ef">Float32</span>, num_out_channel)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> ConvLayer(weight, bias, stribe, padding, kernel_size)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">ReLU</span> <span style="color:#f92672">&lt;:</span> <span style="color:#66d9ef">AbstractLayer</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">MaxPoolLayer</span> <span style="color:#f92672">&lt;:</span> <span style="color:#66d9ef">AbstractLayer</span>
+</span></span><span style="display:flex;"><span>    size
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">Flatten</span> <span style="color:#f92672">&lt;:</span> <span style="color:#66d9ef">AbstractLayer</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">DenseLayer</span> <span style="color:#f92672">&lt;:</span> <span style="color:#66d9ef">AbstractLayer</span>
+</span></span><span style="display:flex;"><span>    weights,
+</span></span><span style="display:flex;"><span>    bias
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">function</span> DenseLayer(num_input_channels<span style="color:#f92672">::</span><span style="color:#66d9ef">Int</span>, num_output_channels<span style="color:#f92672">::</span><span style="color:#66d9ef">Int</span>)
+</span></span><span style="display:flex;"><span>        weights <span style="color:#f92672">=</span> randn(<span style="color:#66d9ef">Float32</span>, num_output_channels, num_input_channels)
+</span></span><span style="display:flex;"><span>        bias <span style="color:#f92672">=</span> zeros(<span style="color:#66d9ef">Float32</span>, num_output_channels)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> DenseLayer(weights, bias)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><p>除了各层本身的属性和参数外，还需要缓存各层输入输出的数据（反向传播时需要加入计算），像池化层（这里使用最大池），还需要记录额外信息（如最大值的位置）。</p>
+]]></content></item><item><title>纳博科夫的 Ending</title><link>https://cpmores.github.io/posts/nabokovs_end/</link><pubDate>Sat, 17 Jan 2026 19:05:54 +0800</pubDate><guid>https://cpmores.github.io/posts/nabokovs_end/</guid><description>&lt;p&gt;今日再一次注视卢塞特的消逝，有一种力量驱使我写下一点东西，也为我从高中第一次阅读这本 “家族纪事” 开始，三年来的流转，画上一个结束的圆圈。&lt;/p&gt;
 &lt;p&gt;我尝试去回忆三年以来的生活，我在寻找一个楔子，我的生活里有没有那么一个姨妈的红茶，能把我带往不可回溯的过去呢？或许是有的，零散的言语，分离的动作。但我试图去重构，并破碎的节点添上时间之时，一种无法褪去的眼神总是抓住我的思绪，将整个世界的重构增添危机的不稳定。&lt;/p&gt;
 &lt;p&gt;我是否说过这句话，以往的细节究竟如何，当我的言语与空气接触之时，我的视觉是否看到了同样的东西？我无法确定，所以所有的回忆当从碎片转为事件之时，不可避免的被我的想象粘合。好像正写着小说，当我尝试回忆。&lt;/p&gt;
 &lt;p&gt;小说主角的年龄不会超过 40 岁，可能 35 岁。人生发生小说的精彩只在青年以前，Lucette 坠入 Atlantic 芳龄几何？25 岁，1876 &amp;ndash; 1901。凡也不过 31，故事也该结束了。这里可以说是 Ada or Ardor 的第一次结尾，随着 Andrey 17 年后病死，Ada 和 Van 迎来第二次 Ending。&lt;/p&gt;
