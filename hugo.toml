@@ -43,3 +43,6 @@ weight = 30
 
 [markup.goldmark.renderer]
 unsafe = true # 允许原始 HTML（如 iframe）
+
+[author]
+name = "cpmores"
