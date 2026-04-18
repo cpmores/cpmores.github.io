@@ -18,6 +18,7 @@ homeSubtitle = "A place to hide, I am an Ostrich" # 首页副标题
 enableSharingButtons = true                 # 按钮
 enableGlobalLanguageMenu = true              # 多语言切换
 disableReadOtherPosts = false                # 显示其他文章链接
+author = "cpmores"
 
 [params.search]
 enable = true    # 启用搜索
@@ -43,9 +44,3 @@ weight = 30
 
 [markup.goldmark.renderer]
 unsafe = true # 允许原始 HTML（如 iframe）
-
-[author]
-name = "cpmores"
-
-[params.author]
-name = "Cpmores"
